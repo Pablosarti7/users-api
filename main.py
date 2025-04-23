@@ -4,13 +4,15 @@ from database import create_db_and_tables, get_session
 from models import User, UserCreate, UserResponse
 from typing import List
 from passlib.context import CryptContext
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="Users API")
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-@app.on_event("startup")
-def on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     create_db_and_tables()
+    yield
+
+app = FastAPI(title="Users API", lifespan=lifespan)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @app.get("/")
 async def read_root():
