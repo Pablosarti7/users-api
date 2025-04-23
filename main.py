@@ -5,6 +5,7 @@ from models import User, UserCreate, UserResponse
 from typing import List
 from passlib.context import CryptContext
 from contextlib import asynccontextmanager
+import uvicorn
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -79,3 +80,6 @@ def get_user(user_id: int, session: Session = Depends(get_session)):
 #     session.delete(user)
 #     session.commit()
 #     return {"message": "User deleted successfully"}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
